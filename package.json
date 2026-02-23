@@ -1,0 +1,56 @@
+{
+  "name": "cellar-door-entry",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Verifiable arrival markers — the authenticated declaration of arrival that completes identity continuity across contexts.",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@noble/hashes": "^1.8.0"
+  },
+  "peerDependencies": {
+    "cellar-door-exit": ">=0.1.0"
+  },
+  "devDependencies": {
+    "cellar-door-exit": "file:../cellar-door-exit",
+    "@types/node": "^20.19.33",
+    "tsup": "^8.5.1",
+    "typescript": "^5.4.5",
+    "vitest": "^3.2.4"
+  },
+  "license": "Apache-2.0",
+  "keywords": [
+    "entry",
+    "arrival",
+    "agent",
+    "verifiable",
+    "did",
+    "ai-agent",
+    "protocol",
+    "cellar-door"
+  ]
+}
