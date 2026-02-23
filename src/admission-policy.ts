@@ -83,7 +83,7 @@ export function evaluateAdmission(
   if (policy.requiredModules && policy.requiredModules.length > 0) {
     for (const mod of policy.requiredModules) {
       const key = mod as (typeof MODULE_KEYS)[number];
-      if (MODULE_KEYS.includes(key) && !(exitMarker as Record<string, unknown>)[key]) {
+      if (MODULE_KEYS.includes(key) && !(exitMarker as any)[key]) {
         reasons.push(`Required module "${mod}" is missing`);
       }
     }
