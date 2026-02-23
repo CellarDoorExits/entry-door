@@ -36,7 +36,7 @@
     "cellar-door-exit": ">=0.1.0"
   },
   "devDependencies": {
-    "cellar-door-exit": "file:../cellar-door-exit",
+    "cellar-door-exit": ">=0.1.0",
     "@types/node": "^20.19.33",
     "tsup": "^8.5.1",
     "typescript": "^5.4.5",
