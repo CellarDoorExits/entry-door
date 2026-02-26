@@ -27,7 +27,8 @@
     "build": "tsup src/index.ts --format esm,cjs --dts",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "prepublishOnly": "npm run build && npm test"
   },
   "dependencies": {
     "@noble/hashes": "^1.8.0"
