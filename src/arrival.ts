@@ -16,6 +16,7 @@ import {
  */
 export function canonicalize(obj: unknown): string {
   if (obj === null || obj === undefined) return JSON.stringify(obj);
+  if (typeof obj === "string") return JSON.stringify(obj.normalize("NFC"));
   if (typeof obj !== "object") return JSON.stringify(obj);
   if (Array.isArray(obj)) {
     return "[" + obj.map((v) => canonicalize(v)).join(",") + "]";

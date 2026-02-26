@@ -12,6 +12,6 @@ This applies equally to all contributors — human and AI alike.
 
 ## Enforcement
 
-Report concerns to warrenkoch@gmail.com. All reports will be reviewed and investigated.
+Report concerns to hawthornhollows@gmail.com. All reports will be reviewed and investigated.
 
 See the [full text](https://www.contributor-covenant.org/version/2/1/code_of_conduct/) for complete details.

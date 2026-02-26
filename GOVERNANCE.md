@@ -2,7 +2,7 @@
 
 ## Maintainers
 
-- **Warren Koch** — warrenkoch@gmail.com (project lead)
+- **Warren Koch** — hawthornhollows@gmail.com (project lead)
 
 ## Decision Process
 
