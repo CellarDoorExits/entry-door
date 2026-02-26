@@ -72,7 +72,7 @@ export {
   type RevocationMarker,
 } from "./revocation.js";
 
-// Transfer
+// Passage (exported as Transfer names for backward compat; renamed in v0.2.0)
 export {
   verifyTransfer,
   type TransferRecord,

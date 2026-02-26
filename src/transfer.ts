@@ -1,7 +1,11 @@
 /**
- * cellar-door-entry — Transfer Verification
+ * cellar-door-entry — Passage Verification
  *
- * The TRANSFER primitive: end-to-end verification of EXIT → ENTRY.
+ * The PASSAGE primitive: end-to-end verification of EXIT → ENTRY.
+ *
+ * NOTE: Exported names (`TransferRecord`, `verifyTransfer`, `transferTime`)
+ * are kept for backward compatibility. They will be renamed to
+ * `PassageRecord`, `verifyPassage`, and `passageTime` in v0.2.0.
  */
 
 import { verifyMarker, type ExitMarker } from "cellar-door-exit";
@@ -9,21 +13,22 @@ import { verifyArrivalMarker } from "./sign.js";
 import { verifyContinuity } from "./continuity.js";
 import type { ArrivalMarker, ContinuityResult } from "./types.js";
 
-/** A complete transfer record linking EXIT and ENTRY. */
+/** A complete Passage record linking EXIT and ENTRY. (Rename to PassageRecord in v0.2.0) */
 export interface TransferRecord {
   exit: ExitMarker;
   arrival: ArrivalMarker;
   continuity: ContinuityResult;
   /** Time between departure and arrival in milliseconds. */
   transferTime: number;
-  /** Whether the full transfer is verified. */
+  /** Whether the full Passage is verified. */
   verified: boolean;
   /** Errors from any stage of verification. */
   errors: string[];
 }
 
 /**
- * Verify a complete transfer: exit signature, arrival signature, and continuity.
+ * Verify a complete Passage: exit signature, arrival signature, and continuity.
+ * (Rename to verifyPassage in v0.2.0)
  */
 export function verifyTransfer(exitMarker: ExitMarker, arrivalMarker: ArrivalMarker): TransferRecord {
   const errors: string[] = [];
@@ -46,7 +51,7 @@ export function verifyTransfer(exitMarker: ExitMarker, arrivalMarker: ArrivalMar
     errors.push(...continuity.errors.map((e) => `CONTINUITY: ${e}`));
   }
 
-  // 4. Compute transfer time
+  // 4. Compute passage time
   const exitTime = new Date(exitMarker.timestamp).getTime();
   const arrivalTime = new Date(arrivalMarker.timestamp).getTime();
   const transferTime = arrivalTime - exitTime;

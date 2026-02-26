@@ -8,6 +8,8 @@ import { sign, verify, didFromPublicKey, publicKeyFromDid } from "cellar-door-ex
 import { canonicalize } from "./arrival.js";
 import type { ArrivalMarker } from "./types.js";
 
+const DOMAIN_PREFIX = "entry-marker-v1.0:";
+
 /** A signed revocation marker. */
 export interface RevocationMarker {
   type: "RevocationMarker";
@@ -58,7 +60,7 @@ export function createRevocationMarker(
     timestamp: new Date().toISOString(),
   };
   const canonical = canonicalize(body);
-  const data = new TextEncoder().encode(canonical);
+  const data = new TextEncoder().encode(DOMAIN_PREFIX + canonical);
   const signature = sign(data, privateKey);
   const proofValue = btoa(String.fromCharCode(...signature));
 
@@ -105,7 +107,7 @@ export function verifyRevocationMarker(
     const publicKey = publicKeyFromDid(marker.proof.verificationMethod);
     const { proof: _proof, ...rest } = marker;
     const canonical = canonicalize(rest);
-    const data = new TextEncoder().encode(canonical);
+    const data = new TextEncoder().encode(DOMAIN_PREFIX + canonical);
     const sigStr = atob(marker.proof.proofValue);
     const signature = new Uint8Array(sigStr.length);
     for (let i = 0; i < sigStr.length; i++) signature[i] = sigStr.charCodeAt(i);

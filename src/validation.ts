@@ -8,8 +8,8 @@ import { canonicalize } from "./arrival.js";
 import type { ArrivalMarker } from "./types.js";
 import { ENTRY_CONTEXT_V1 } from "./types.js";
 
-/** Maximum serialized size of an arrival marker (1MB, consistent with exit). */
-export const MAX_MARKER_SIZE = 1_048_576;
+/** Maximum serialized size of an arrival marker (8KB, consistent with exit). */
+export const MAX_MARKER_SIZE = 8192;
 
 /** Validation result. */
 export interface ValidationResult {
@@ -35,14 +35,22 @@ export function validateArrivalMarker(marker: unknown): ValidationResult {
 
   const m = marker as Record<string, unknown>;
 
-  // Size check
+  // Size check (byte length)
   try {
     const serialized = JSON.stringify(m);
-    if (serialized.length > MAX_MARKER_SIZE) {
-      errors.push(`Marker exceeds maximum size of ${MAX_MARKER_SIZE} bytes (got ${serialized.length})`);
+    const byteLength = new TextEncoder().encode(serialized).byteLength;
+    if (byteLength > MAX_MARKER_SIZE) {
+      errors.push(`Marker exceeds maximum size of ${MAX_MARKER_SIZE} bytes (got ${byteLength})`);
     }
   } catch {
     errors.push("Marker cannot be serialized to JSON");
+  }
+
+  // ADV-002: Reject strings containing control characters (except \n, \r, \t)
+  for (const field of ["subject", "departureRef", "departureOrigin", "destination", "id"] as const) {
+    if (typeof m[field] === "string" && /[\x00-\x08\x0b\x0c\x0e-\x1f]/.test(m[field] as string)) {
+      errors.push(`${field} contains invalid control characters`);
+    }
   }
 
   // Context

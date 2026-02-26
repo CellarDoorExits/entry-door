@@ -14,14 +14,6 @@ export interface AdmissionPolicy {
   maxDepartureAge?: number;
   /** Allowed exit types (e.g., ['voluntary']). Empty = all allowed. */
   allowedExitTypes?: string[];
-  /**
-   * Blocked origin platforms.
-   *
-   * WARNING: Coordinating blockedOrigins lists across platforms may raise
-   * antitrust concerns under Sherman Act §1 / EU TFEU Art. 101. Use only
-   * for platform-specific security policies, not industry-wide exclusion.
-   */
-  blockedOrigins?: string[];
   /** Required EXIT modules (e.g., ['lineage', 'stateSnapshot']). */
   requiredModules?: string[];
 }
@@ -57,11 +49,6 @@ export function evaluateAdmission(
   const reasons: string[] = [];
   const conditions: string[] = [];
   const currentTime = (now ?? new Date()).getTime();
-
-  // Check blocked origins
-  if (policy.blockedOrigins?.includes(exitMarker.origin)) {
-    reasons.push(`Origin "${exitMarker.origin}" is blocked`);
-  }
 
   // Check allowed exit types
   if (policy.allowedExitTypes && policy.allowedExitTypes.length > 0) {

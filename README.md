@@ -28,9 +28,9 @@ console.log(arrivalMarker.departureRef); // urn:exit:...
 console.log(arrivalMarker.subject);      // did:key:z6Mk...
 ```
 
-## The Transfer Flow
+## The Passage Flow
 
-The complete pipeline for agent transfer between platforms:
+The complete pipeline for agent passage between platforms:
 
 ```
 EXIT → verify departure → evaluate admission → create arrival → sign → verify continuity → claim
@@ -70,9 +70,9 @@ const signed = signArrivalMarker(arrival, dest.privateKey, dest.publicKey);
 const store = new InMemoryClaimStore();
 store.claim(exitMarker.id, signed.id);
 
-// 6. Verify the full transfer
-const transfer = verifyTransfer(exitMarker, signed);
-console.log(transfer.verified); // true
+// 6. Verify the full passage
+const passage = verifyTransfer(exitMarker, signed);  // renamed to verifyPassage() in v0.2.0
+console.log(passage.verified); // true
 
 // 7. Validate marker structure
 const valid = validateArrivalMarker(signed);
@@ -99,7 +99,6 @@ const policy: AdmissionPolicy = {
   requireVerifiedDeparture: true,
   maxDepartureAge: 3_600_000,          // 1 hour
   allowedExitTypes: ["voluntary"],
-  blockedOrigins: ["https://bad.example.com"],
   requiredModules: ["lineage"],
 };
 const result = evaluateAdmission(exitMarker, policy);
@@ -170,15 +169,17 @@ verifyRevocationMarker(revocation);           // { valid: true, errors: [] }
 isRevoked(signedArrival.id, [revocation]);    // true
 ```
 
-### Transfer Verification
+### Passage Verification
 
 End-to-end verification of the EXIT → ENTRY chain.
+
+> **Note:** The API currently exports `verifyTransfer()` — will be renamed to `verifyPassage()` in v0.2.0.
 
 ```typescript
 import { verifyTransfer } from "cellar-door-entry";
 
 const record = verifyTransfer(exitMarker, signedArrival);
-// → { verified: boolean, errors: [], transferTime: 1234, continuity: {...} }
+// → { verified: boolean, errors: [], passageTime: 1234, continuity: {...} }
 ```
 
 ### Input Validation
@@ -213,7 +214,7 @@ const result = validateArrivalMarker(marker);
 | `createRevocationMarker(arrival, reason, privKey, pubKey)` | Create a signed revocation |
 | `verifyRevocationMarker(marker)` | Verify revocation signature |
 | `isRevoked(arrivalId, revocations)` | Check if an arrival is revoked |
-| `verifyTransfer(exit, arrival)` | Full end-to-end transfer verification |
+| `verifyTransfer(exit, arrival)` | Full end-to-end passage verification (rename to `verifyPassage` in v0.2.0) |
 | `validateArrivalMarker(marker)` | Validate marker structure and fields |
 
 ## Continuity Checks

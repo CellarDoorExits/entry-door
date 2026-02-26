@@ -318,34 +318,14 @@ describe("admission-policy", () => {
   });
 
   describe("custom policies", () => {
-    it("should block specific origins", () => {
-      const { marker } = makeSignedExit("https://bad-platform.example.com");
-      const policy: AdmissionPolicy = {
-        blockedOrigins: ["https://bad-platform.example.com"],
-      };
-      const result = evaluateAdmission(marker, policy);
-      expect(result.admitted).toBe(false);
-      expect(result.reasons.some((r) => r.includes("blocked"))).toBe(true);
-    });
-
-    it("should allow non-blocked origins", () => {
-      const { marker } = makeSignedExit("https://good-platform.example.com");
-      const policy: AdmissionPolicy = {
-        blockedOrigins: ["https://bad-platform.example.com"],
-      };
-      const result = evaluateAdmission(marker, policy);
-      expect(result.admitted).toBe(true);
-    });
-
     it("should compose multiple rules", () => {
       const { marker } = makeSignedExitWithType(ExitType.Emergency);
       const policy: AdmissionPolicy = {
         allowedExitTypes: ["voluntary"],
-        blockedOrigins: ["https://platform-a.example.com"],
       };
       const result = evaluateAdmission(marker, policy);
       expect(result.admitted).toBe(false);
-      expect(result.reasons.length).toBe(2); // both rules fail
+      expect(result.reasons.length).toBe(1);
     });
   });
 });
