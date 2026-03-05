@@ -71,6 +71,7 @@ export {
   verifyRevocationMarker,
   isRevoked,
   type RevocationMarker,
+  type RevocationAlgorithm,
 } from "./revocation.js";
 
 // Passage (exported as Transfer names for backward compat; renamed in v0.2.0)
