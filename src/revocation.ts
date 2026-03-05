@@ -4,9 +4,16 @@
  * Revoke arrivals after the fact (e.g., fraud discovered, policy violation).
  */
 
-import { sign, verify, didFromPublicKey, publicKeyFromDid } from "cellar-door-exit";
+import {
+  sign, verify, didFromPublicKey, publicKeyFromDid,
+  signP256, verifyP256, didFromP256PublicKey, publicKeyFromP256Did,
+  algorithmFromDid,
+} from "cellar-door-exit";
 import { canonicalize } from "./arrival.js";
 import type { ArrivalMarker } from "./types.js";
+
+/** Signature algorithm for revocation markers. */
+export type RevocationAlgorithm = "Ed25519" | "P-256";
 
 const DOMAIN_PREFIX = "entry-marker-v1.0:";
 
@@ -25,7 +32,7 @@ export interface RevocationMarker {
   timestamp: string;
   /** Proof — signed by the revoking authority. */
   proof: {
-    type: "Ed25519Signature2020";
+    type: "Ed25519Signature2020" | "EcdsaP256Signature2019";
     created: string;
     verificationMethod: string;
     proofValue: string;
@@ -40,9 +47,12 @@ export function createRevocationMarker(
   arrivalMarker: ArrivalMarker,
   reason: string,
   privateKey: Uint8Array,
-  publicKey: Uint8Array
+  publicKey: Uint8Array,
+  algorithm: RevocationAlgorithm = "Ed25519"
 ): RevocationMarker {
-  const did = didFromPublicKey(publicKey);
+  const did = algorithm === "P-256"
+    ? didFromP256PublicKey(publicKey)
+    : didFromPublicKey(publicKey);
 
   // Verify that the revoker is the destination platform that signed the arrival
   if (arrivalMarker.proof?.verificationMethod && arrivalMarker.proof.verificationMethod !== did) {
@@ -61,13 +71,16 @@ export function createRevocationMarker(
   };
   const canonical = canonicalize(body);
   const data = new TextEncoder().encode(DOMAIN_PREFIX + canonical);
-  const signature = sign(data, privateKey);
+  const signature = algorithm === "P-256"
+    ? signP256(data, privateKey)
+    : sign(data, privateKey);
   const proofValue = btoa(String.fromCharCode(...signature));
+  const proofType = algorithm === "P-256" ? "EcdsaP256Signature2019" as const : "Ed25519Signature2020" as const;
 
   return {
     ...body,
     proof: {
-      type: "Ed25519Signature2020",
+      type: proofType,
       created: new Date().toISOString(),
       verificationMethod: did,
       proofValue,
@@ -104,14 +117,21 @@ export function verifyRevocationMarker(
   }
 
   try {
-    const publicKey = publicKeyFromDid(marker.proof.verificationMethod);
+    const did = marker.proof.verificationMethod;
+    const alg = algorithmFromDid(did);
+    const publicKey = alg === "P-256"
+      ? publicKeyFromP256Did(did)
+      : publicKeyFromDid(did);
     const { proof: _proof, ...rest } = marker;
     const canonical = canonicalize(rest);
     const data = new TextEncoder().encode(DOMAIN_PREFIX + canonical);
     const sigStr = atob(marker.proof.proofValue);
     const signature = new Uint8Array(sigStr.length);
     for (let i = 0; i < sigStr.length; i++) signature[i] = sigStr.charCodeAt(i);
-    if (!verify(data, signature, publicKey)) {
+    const valid = alg === "P-256"
+      ? verifyP256(data, signature, publicKey)
+      : verify(data, signature, publicKey);
+    if (!valid) {
       errors.push("Revocation signature verification failed");
     }
   } catch (e) {
