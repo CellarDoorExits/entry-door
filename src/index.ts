@@ -10,6 +10,7 @@ export {
   ENTRY_CONTEXT_V1,
   type ArrivalMarker,
   type ArrivalProof,
+  type ArrivalProofType,
   type VerificationResult,
   type AdmissionType,
   type CreateArrivalOpts,
@@ -25,13 +26,13 @@ export { verifyDeparture, verifyDepartureJSON } from "./verify-departure.js";
 export { createArrivalMarker, canonicalize, computeArrivalId } from "./arrival.js";
 
 // Sign and verify arrival markers
-export { signArrivalMarker, verifyArrivalMarker, type ArrivalVerificationResult } from "./sign.js";
+export { signArrivalMarker, verifyArrivalMarker, type ArrivalVerificationResult, type SignatureAlgorithm } from "./sign.js";
 
 // Continuity verification
 export { verifyContinuity } from "./continuity.js";
 
 // Convenience
-export { quickEntry, type QuickEntryResult } from "./convenience.js";
+export { quickEntry, quickEntryP256, type QuickEntryResult, type QuickEntryOpts } from "./convenience.js";
 
 // Admission Policy
 export {
