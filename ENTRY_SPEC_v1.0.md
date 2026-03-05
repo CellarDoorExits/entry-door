@@ -3,7 +3,7 @@
 **Status:** Draft  
 **Date:** 2026-02-24  
 **Authors:** Cellar Door Contributors  
-**Companion to:** EXIT_SPEC v1.1  
+**Companion to:** EXIT_SPEC v1.2  
 **License:** Apache 2.0  
 **Brand:** Cellar Door — Passage Protocol · Proof of Passage (PoP)
 
@@ -902,7 +902,7 @@ The canonical TypeScript type definitions are maintained in `src/types.ts`. The 
 
 ### 22.1 Visual Door Support
 
-EXIT_SPEC v1.1 defines visual hash fingerprinting via door ASCII art and SVG rendering (see EXIT_SPEC §12.x "Visual Representations"). ENTRY markers are supported by the visual system:
+EXIT_SPEC v1.2 defines visual hash fingerprinting via door ASCII art and SVG rendering (see EXIT_SPEC §12.x "Visual Representations"). ENTRY markers are supported by the visual system:
 
 - `renderDoorASCII(hash, isEntry=true)` renders an ENTRY-specific door using the **𓉸➜** motif (arriving through the door)
 - `renderDoorSVG(hash, isEntry=true)` produces an SVG door visualization
@@ -913,7 +913,7 @@ Visual doors are **decorative and informational**, NOT a security mechanism. The
 
 ### 22.2 RFC 3161 Timestamp Anchoring
 
-EXIT_SPEC v1.1 defines RFC 3161 TSA timestamp anchoring (see EXIT_SPEC §11.3). Arrival Markers MAY also be anchored via TSA:
+EXIT_SPEC v1.2 defines RFC 3161 TSA timestamp anchoring (see EXIT_SPEC §11.3). Arrival Markers MAY also be anchored via TSA:
 
 - `anchorWithTSA()` can anchor any content-addressed marker, including Arrival Markers
 - TSA receipts provide independent third-party proof of marker existence at a given time
@@ -923,7 +923,7 @@ Anchoring Arrival Markers via TSA is RECOMMENDED for high-assurance Passage veri
 
 ### 22.3 Git Ledger Anchoring
 
-EXIT_SPEC v1.1 defines git-backed append-only ledger anchoring (see EXIT_SPEC §11.4). Arrival Markers MAY be anchored to git ledgers using the same mechanism, providing an auditable, append-only record of all arrivals at a destination.
+EXIT_SPEC v1.2 defines git-backed append-only ledger anchoring (see EXIT_SPEC §11.4). Arrival Markers MAY be anchored to git ledgers using the same mechanism, providing an auditable, append-only record of all arrivals at a destination.
 
 ---
 
@@ -932,7 +932,7 @@ EXIT_SPEC v1.1 defines git-backed append-only ledger anchoring (see EXIT_SPEC §
 - **Package:** `cellar-door-entry`
 - **Test suite:** 77 tests (as of 2026-02-24)
 - **Dependencies:** `cellar-door-exit` (peer dependency for EXIT types, signing, verification)
-- **Spec version:** ENTRY v1.0, companion to EXIT v1.1
+- **Spec version:** ENTRY v1.0, companion to EXIT v1.2
 - **Context URI:** `https://cellar-door.dev/entry/v1` (exported as `ENTRY_CONTEXT_V1`)
 
 ---
@@ -941,7 +941,7 @@ EXIT_SPEC v1.1 defines git-backed append-only ledger anchoring (see EXIT_SPEC §
 
 - [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119) — Key words for use in RFCs
 - [RFC 3161](https://www.rfc-editor.org/rfc/rfc3161) — Internet X.509 PKI Time-Stamp Protocol
-- [EXIT_SPEC v1.1](../cellar-door-exit/specs/EXIT_SPEC_v1.1.md) — EXIT Protocol Specification
+- [EXIT_SPEC v1.2](../cellar-door-exit/specs/EXIT_SPEC_v1.2.md) — EXIT Protocol Specification
 - [W3C Verifiable Credentials Data Model 2.0](https://www.w3.org/TR/vc-data-model-2.0/)
 - [W3C DID Core](https://www.w3.org/TR/did-core/)
 - [JSON-LD 1.1](https://www.w3.org/TR/json-ld11/)

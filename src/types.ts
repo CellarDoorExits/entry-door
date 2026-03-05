@@ -13,9 +13,12 @@ export interface VerificationResult {
 /** How the agent was admitted to the destination. */
 export type AdmissionType = "automatic" | "reviewed" | "conditional";
 
-/** Ed25519 proof on the arrival marker. */
+/** Supported proof types for arrival markers. */
+export type ArrivalProofType = "Ed25519Signature2020" | "EcdsaP256Signature2019";
+
+/** Cryptographic proof on the arrival marker. */
 export interface ArrivalProof {
-  type: "Ed25519Signature2020";
+  type: ArrivalProofType;
   created: string;
   verificationMethod: string;
   proofValue: string;
