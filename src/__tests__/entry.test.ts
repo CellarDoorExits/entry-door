@@ -1,8 +1,11 @@
 import { describe, it, expect } from "vitest";
 import {
   quickExit,
+  quickExitP256,
   toJSON,
   generateIdentity,
+  generateP256KeyPair,
+  didFromP256PublicKey,
   createMarker,
   signMarker,
   ExitType,
@@ -18,6 +21,7 @@ import {
   verifyContinuity,
   quickEntry,
   ENTRY_CONTEXT_V1,
+  quickEntryP256,
   // New modules
   evaluateAdmission,
   parseDuration,
@@ -837,5 +841,68 @@ describe("full pipeline: exit → admit → enter → verify → transfer", () =
     // Unclaim via revocation
     await store.revoke(signed.id);
     expect(await store.isClaimed(exit.id)).toBe(false);
+  });
+});
+
+// ─── P-256 Algorithm Support (ENTRY-02) ──────────────────────────────────────
+
+describe("P-256 algorithm support", () => {
+  it("should sign and verify an arrival marker with P-256", () => {
+    const { marker: exit } = makeSignedExit();
+    const arrival = createArrivalMarker(exit, "https://platform-b.example.com");
+    const { publicKey, privateKey } = generateP256KeyPair();
+    const signed = signArrivalMarker(arrival, privateKey, publicKey, "P-256");
+
+    expect(signed.proof).toBeDefined();
+    expect(signed.proof!.type).toBe("EcdsaP256Signature2019");
+
+    const result = verifyArrivalMarker(signed);
+    expect(result.valid).toBe(true);
+    expect(result.errors).toEqual([]);
+  });
+
+  it("should reject tampered P-256 arrival marker", () => {
+    const { marker: exit } = makeSignedExit();
+    const arrival = createArrivalMarker(exit, "https://platform-b.example.com");
+    const { publicKey, privateKey } = generateP256KeyPair();
+    const signed = signArrivalMarker(arrival, privateKey, publicKey, "P-256");
+
+    const tampered = { ...signed, destination: "https://evil.example.com" };
+    const result = verifyArrivalMarker(tampered);
+    expect(result.valid).toBe(false);
+  });
+
+  it("quickEntry should support P-256 algorithm option", () => {
+    const { marker: exit } = makeSignedExit();
+    const json = toJSON(exit);
+
+    const result = quickEntry(json, "https://platform-b.example.com", { algorithm: "P-256" });
+
+    expect(result.arrivalMarker.proof).toBeDefined();
+    expect(result.arrivalMarker.proof!.type).toBe("EcdsaP256Signature2019");
+    expect(result.continuity.valid).toBe(true);
+  });
+
+  it("quickEntryP256 convenience should work", () => {
+    const { marker: exit } = makeSignedExit();
+    const json = toJSON(exit);
+
+    const result = quickEntryP256(json, "https://platform-b.example.com");
+
+    expect(result.arrivalMarker.proof).toBeDefined();
+    expect(result.arrivalMarker.proof!.type).toBe("EcdsaP256Signature2019");
+    expect(result.continuity.valid).toBe(true);
+  });
+
+  it("should handle P-256 EXIT → P-256 ENTRY full pipeline", () => {
+    const { marker: exit } = quickExitP256("https://platform-a.example.com");
+    const json = toJSON(exit);
+    const result = quickEntryP256(json, "https://platform-b.example.com");
+
+    expect(result.arrivalMarker.proof!.type).toBe("EcdsaP256Signature2019");
+    expect(result.continuity.valid).toBe(true);
+
+    const transfer = verifyTransfer(exit, result.arrivalMarker);
+    expect(transfer.verified).toBe(true);
   });
 });
