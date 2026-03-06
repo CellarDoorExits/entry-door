@@ -1,5 +1,8 @@
 # cellar-door-entry
 
+> **⚠️ Pre-release software — no formal security audit has been conducted.** This project is published for transparency, review, and community feedback. It should not be used in production systems where security guarantees are required. If you find a vulnerability, please report it to hawthornhollows@gmail.com.
+
+
 **Verifiable arrival markers** — the authenticated declaration of arrival that completes identity continuity across contexts.
 
 The counterpart to [`cellar-door-exit`](../cellar-door-exit). Together they form the complete Cellar Door: *there's always a door, and it swings both ways.*
