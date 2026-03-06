@@ -1,6 +1,6 @@
 {
   "name": "cellar-door-entry",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "type": "module",
   "description": "Verifiable arrival markers — the authenticated declaration of arrival that completes identity continuity across contexts.",
   "main": "dist/index.cjs",
