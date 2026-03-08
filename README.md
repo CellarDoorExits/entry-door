@@ -1,26 +1,39 @@
 # cellar-door-entry
 
+[![npm version](https://img.shields.io/npm/v/cellar-door-entry)](https://www.npmjs.com/package/cellar-door-entry)
+[![tests](https://img.shields.io/badge/tests-80_passing-brightgreen)]()
+[![license](https://img.shields.io/badge/license-Apache--2.0-blue)](./LICENSE)
+[![NIST](https://img.shields.io/badge/NIST-submitted-orange)](https://cellar-door.dev/nist/)
+
 > **⚠️ Pre-release software — no formal security audit has been conducted.** This project is published for transparency, review, and community feedback. It should not be used in production systems where security guarantees are required. If you find a vulnerability, please report it to hawthornhollows@gmail.com.
 
+The arrival side. Verify where an agent came from and decide whether to let it in.
 
-**Verifiable arrival markers** — the authenticated declaration of arrival that completes identity continuity across contexts.
+## 🗺️ Ecosystem
 
-The counterpart to [`cellar-door-exit`](../cellar-door-exit). Together they form the complete Cellar Door: *there's always a door, and it swings both ways.*
+| Package | Description | npm |
+|---------|-------------|-----|
+| [cellar-door-exit](https://github.com/CellarDoorExits/exit-door) | Core protocol — departure markers | [![npm](https://img.shields.io/npm/v/cellar-door-exit)](https://www.npmjs.com/package/cellar-door-exit) |
+| **[cellar-door-entry](https://github.com/CellarDoorExits/entry-door)** | **Arrival markers + admission** ← you are here | [![npm](https://img.shields.io/npm/v/cellar-door-entry)](https://www.npmjs.com/package/cellar-door-entry) |
+| [@cellar-door/mcp-server](https://github.com/CellarDoorExits/mcp-server) | MCP integration | [![npm](https://img.shields.io/npm/v/@cellar-door/mcp-server)](https://www.npmjs.com/package/@cellar-door/mcp-server) |
+| [@cellar-door/langchain](https://github.com/CellarDoorExits/langchain) | LangChain integration | [![npm](https://img.shields.io/npm/v/@cellar-door/langchain)](https://www.npmjs.com/package/@cellar-door/langchain) |
+| [@cellar-door/vercel-ai-sdk](https://github.com/CellarDoorExits/vercel-ai-sdk) | Vercel AI SDK integration | [![npm](https://img.shields.io/npm/v/@cellar-door/vercel-ai-sdk)](https://www.npmjs.com/package/@cellar-door/vercel-ai-sdk) |
+| [@cellar-door/openclaw-skill](https://github.com/CellarDoorExits/openclaw-skill) | OpenClaw agent skill | [![npm](https://img.shields.io/npm/v/@cellar-door/openclaw-skill)](https://www.npmjs.com/package/@cellar-door/openclaw-skill) |
 
-## Install
+**[Paper](https://cellar-door.dev/paper/) · [Website](https://cellar-door.dev) · [NIST Submission](https://cellar-door.dev/nist/) · [Policy Briefs](https://cellar-door.dev/briefs/)**
+
+## Quick Start
 
 ```bash
 npm install cellar-door-entry cellar-door-exit
 ```
-
-## Quick Start
 
 ```typescript
 import { quickExit, toJSON } from "cellar-door-exit";
 import { quickEntry } from "cellar-door-entry";
 
 // Agent exits Platform A
-const { marker: exitMarker } = quickExit("https://platform-a.example.com");
+const { marker: exitMarker } = await quickExit("https://platform-a.example.com");
 const exitJson = toJSON(exitMarker);
 
 // Agent arrives at Platform B
@@ -53,7 +66,7 @@ import {
 } from "cellar-door-entry";
 
 // 1. Agent exits Platform A
-const { marker: exitMarker } = quickExit("https://platform-a.example.com");
+const { marker: exitMarker } = await quickExit("https://platform-a.example.com");
 
 // 2. Evaluate admission policy
 const admission = evaluateAdmission(exitMarker, OPEN_DOOR);
@@ -74,7 +87,7 @@ const store = new InMemoryClaimStore();
 store.claim(exitMarker.id, signed.id);
 
 // 6. Verify the full passage
-const passage = verifyTransfer(exitMarker, signed);  // renamed to verifyPassage() in v0.2.0
+const passage = verifyTransfer(exitMarker, signed);
 console.log(passage.verified); // true
 
 // 7. Validate marker structure
@@ -146,7 +159,7 @@ const merged = mergeScopes(scope, restricted);
 
 ### Claim Tracking
 
-Prevent replay attacks — each EXIT marker can only be claimed once.
+Prevent replay attacks; each EXIT marker can only be claimed once.
 
 ```typescript
 import { InMemoryClaimStore } from "cellar-door-entry";
@@ -176,7 +189,7 @@ isRevoked(signedArrival.id, [revocation]);    // true
 
 End-to-end verification of the EXIT → ENTRY chain.
 
-> **Note:** The API currently exports `verifyTransfer()` — will be renamed to `verifyPassage()` in v0.2.0.
+> **Note:** The API currently exports `verifyTransfer()`. This will be renamed to `verifyPassage()` in v0.2.0.
 
 ```typescript
 import { verifyTransfer } from "cellar-door-entry";
@@ -217,7 +230,7 @@ const result = validateArrivalMarker(marker);
 | `createRevocationMarker(arrival, reason, privKey, pubKey)` | Create a signed revocation |
 | `verifyRevocationMarker(marker)` | Verify revocation signature |
 | `isRevoked(arrivalId, revocations)` | Check if an arrival is revoked |
-| `verifyTransfer(exit, arrival)` | Full end-to-end passage verification (rename to `verifyPassage` in v0.2.0) |
+| `verifyTransfer(exit, arrival)` | Full end-to-end passage verification |
 | `validateArrivalMarker(marker)` | Validate marker structure and fields |
 
 ## Continuity Checks
