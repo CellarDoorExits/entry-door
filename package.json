@@ -44,6 +44,10 @@
     "vitest": "^3.2.4"
   },
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CellarDoorExits/entry-door"
+  },
   "keywords": [
     "entry",
     "arrival",
