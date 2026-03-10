@@ -34,11 +34,19 @@
     "@noble/hashes": "^1.8.0"
   },
   "peerDependencies": {
-    "cellar-door-exit": ">=0.1.0"
+    "better-sqlite3": ">=9.0.0",
+    "cellar-door-exit": ">=0.2.0"
+  },
+  "peerDependenciesMeta": {
+    "better-sqlite3": {
+      "optional": true
+    }
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20.19.33",
-    "cellar-door-exit": "^0.2.0",
+    "better-sqlite3": "^12.6.2",
+    "cellar-door-exit": "file:../exit-door",
     "tsup": "^8.5.1",
     "typescript": "^5.4.5",
     "vitest": "^3.2.4"

@@ -40,8 +40,27 @@ const MODULE_KEYS = ["lineage", "stateSnapshot", "dispute", "economic", "metadat
 
 /**
  * Evaluate whether an EXIT marker should be admitted under a given policy.
+ * Accepts both flat AdmissionPolicy (backward compat) and BuiltPolicy (v2).
  */
 export function evaluateAdmission(
+  exitMarker: ExitMarker,
+  policy: AdmissionPolicy | { evaluate: Function; name: string },
+  now?: Date
+): AdmissionResult {
+  // If this is a BuiltPolicy (has evaluate method), use it
+  if ("evaluate" in policy && typeof policy.evaluate === "function") {
+    const result = policy.evaluate(exitMarker, { now: now ?? new Date() });
+    return {
+      admitted: result.admitted,
+      conditions: result.conditions,
+      reasons: result.reasons,
+    };
+  }
+
+  return evaluateFlat(exitMarker, policy as AdmissionPolicy, now);
+}
+
+function evaluateFlat(
   exitMarker: ExitMarker,
   policy: AdmissionPolicy,
   now?: Date

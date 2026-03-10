@@ -1,7 +1,7 @@
 # cellar-door-entry
 
 [![npm version](https://img.shields.io/npm/v/cellar-door-entry)](https://www.npmjs.com/package/cellar-door-entry)
-[![tests](https://img.shields.io/badge/tests-80_passing-brightgreen)]()
+[![tests](https://img.shields.io/badge/tests-248_passing-brightgreen)]()
 [![license](https://img.shields.io/badge/license-Apache--2.0-blue)](./LICENSE)
 [![NIST](https://img.shields.io/badge/NIST-submitted-orange)](https://cellar-door.dev/nist/)
 
@@ -100,11 +100,113 @@ const valid = validateArrivalMarker(signed);
 console.log(valid.valid); // true
 ```
 
-## Modules
+## Policy Engine (v2)
 
-### Admission Policy
+Composable, fail-closed policy engine for admission decisions. Cryptographic signature verification is built into the ceremony.
 
-Composable rules for deciding whether to admit an arriving agent.
+```typescript
+import { createPolicy, admit, CAUTIOUS, REQUIRE_MUTUAL } from "cellar-door-entry";
+import { quickExit, generateKeyPair } from "cellar-door-exit";
+
+// Build a policy with the fluent API
+const policy = createPolicy("my-platform")
+  .requireVerifiedDeparture()      // cryptographic proof required
+  .onSelfOnly("probation")         // self-attestation gets probation
+  .maxAge("24h")                   // reject stale markers
+  .allowMinting({ requireJustification: true })  // fresh agents OK
+  .build();
+
+// Admit an arriving agent
+const { marker } = await quickExit("https://origin.example.com");
+const platformKeys = generateKeyPair();
+const result = await admit(marker, {
+  policy,
+  platformIdentity: platformKeys,   // enables counter-signing
+  destination: "https://my-platform.example.com",
+});
+
+if (result.admission.admitted) {
+  console.log(result.arrivalMarker.id);              // urn:entry:...
+  console.log(result.admission.counterSigned);        // true
+  console.log(result.admission.policyApplied);        // "my-platform"
+  console.log(result.counterSignedExitMarker);        // exit marker with platform's counter-signature
+}
+```
+
+### Preset Policies
+
+| Preset | Description |
+|--------|-------------|
+| `CAUTIOUS` | Require verified departure, probation for self-only |
+| `REQUIRE_MUTUAL` | Require counter-signed (mutual) markers |
+| `REQUIRE_MUTUAL_WITH_ONRAMP` | Mutual required OR minting allowed (antitrust-safe) |
+| `PERMISSIVE` | Accept most markers, probation for unverified |
+| `LOCKDOWN` | Reject everything |
+
+### Minting
+
+Create arrival records for agents with no departure history:
+
+```typescript
+import { mintAgent, bulkMint, createPolicy } from "cellar-door-entry";
+
+const policy = createPolicy("onboarding")
+  .allowMinting({ requireJustification: true })
+  .build();
+
+// Single mint
+const result = await mintAgent({
+  subjectDid: "did:key:z6MkNewAgent",
+  justification: "Platform bootstrap",
+  policy,
+});
+
+// Bulk migration
+const bulk = await bulkMint(
+  [{ subjectDid: "did:key:z6Mk1", justification: "Migration" }],
+  { policy }
+);
+```
+
+### Events
+
+```typescript
+import { AdmissionEventEmitter } from "cellar-door-entry";
+
+const emitter = new AdmissionEventEmitter({
+  onError: (err, event) => auditLog.error(event.type, err),
+});
+
+emitter.on("agent:admitted", ({ record }) => { /* audit */ });
+emitter.on("agent:rejected", ({ record }) => { /* alert */ });
+emitter.on("agent:quarantined", ({ record }) => { /* review queue */ });
+emitter.on("agent:minted", ({ record }) => { /* onboarding */ });
+
+await admit(marker, { policy, emitter });
+```
+
+### SQLite Claim Store
+
+Production-ready claim tracking with WAL mode and GDPR erasure:
+
+```typescript
+import { SqliteClaimStore } from "cellar-door-entry";
+
+const store = new SqliteClaimStore("./claims.db");
+await admit(marker, { policy, store });
+
+// GDPR: erase all records for a subject
+await store.eraseSubject("did:key:z6MkAgent");
+
+// Stats
+const stats = await store.stats();
+```
+
+## Modules (v1)
+
+### Simple Admission Policy
+
+Declarative rules for basic admission decisions.
 
 ```typescript
 import { evaluateAdmission, OPEN_DOOR, STRICT, EMERGENCY_ONLY } from "cellar-door-entry";

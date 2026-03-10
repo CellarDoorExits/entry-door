@@ -16,15 +16,20 @@ export function verifyDeparture(exitMarker: ExitMarker): VerificationResult {
 /**
  * Parse and verify an EXIT marker from JSON string.
  */
-export function verifyDepartureJSON(exitMarkerJson: string): { marker: ExitMarker; result: VerificationResult } {
+export type VerifyDepartureJSONResult =
+  | { marker: ExitMarker; result: VerificationResult; parsed: true }
+  | { marker: null; result: VerificationResult; parsed: false };
+
+export function verifyDepartureJSON(exitMarkerJson: string): VerifyDepartureJSONResult {
   try {
     const marker = fromJSON(exitMarkerJson);
     const result = verifyDeparture(marker);
-    return { marker, result };
+    return { marker, result, parsed: true };
   } catch (e) {
     return {
-      marker: null as unknown as ExitMarker,
+      marker: null,
       result: { valid: false, errors: [(e as Error).message] },
+      parsed: false,
     };
   }
 }

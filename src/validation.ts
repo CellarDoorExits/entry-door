@@ -4,7 +4,6 @@
  * Validates ArrivalMarker fields, consistent with exit's validation patterns.
  */
 
-import { canonicalize } from "./arrival.js";
 import type { ArrivalMarker } from "./types.js";
 import { ENTRY_CONTEXT_V1 } from "./types.js";
 

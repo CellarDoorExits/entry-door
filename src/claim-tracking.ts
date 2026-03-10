@@ -7,7 +7,7 @@
 
 /** Interface for claim storage backends. All methods are async to support Redis/DB with proper locking. */
 export interface ClaimStore {
-  claim(exitMarkerId: string, arrivalMarkerId: string): Promise<boolean>;
+  claim(exitMarkerId: string, arrivalMarkerId: string, subjectDid?: string): Promise<boolean>;
   isClaimed(exitMarkerId: string): Promise<boolean>;
   getArrivalId(exitMarkerId: string): Promise<string | undefined>;
   revoke(arrivalMarkerId: string): Promise<boolean>;

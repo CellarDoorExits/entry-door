@@ -31,6 +31,9 @@ export interface ArrivalMarker {
   /** JSON-LD context. */
   "@context": typeof ENTRY_CONTEXT_V1;
 
+  /** Marker type discriminant. */
+  type?: "ArrivalMarker";
+
   /** Globally unique identifier. */
   id: string;
 

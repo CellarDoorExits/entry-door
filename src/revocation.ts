@@ -15,7 +15,7 @@ import type { ArrivalMarker } from "./types.js";
 /** Signature algorithm for revocation markers. */
 export type RevocationAlgorithm = "Ed25519" | "P-256";
 
-const DOMAIN_PREFIX = "entry-marker-v1.0:";
+const DOMAIN_PREFIX = "entry-revocation-v1.0:";
 
 /** A signed revocation marker. */
 export interface RevocationMarker {
