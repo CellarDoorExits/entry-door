@@ -3,6 +3,7 @@
  */
 
 import { sha256 } from "@noble/hashes/sha256";
+import _canonicalize from "canonicalize";
 import type { ExitMarker } from "cellar-door-exit";
 import { verifyDeparture } from "./verify-departure.js";
 import {
@@ -12,20 +13,12 @@ import {
 } from "./types.js";
 
 /**
- * Deterministic JSON canonicalization (sorted keys, recursive).
+ * RFC 8785 JSON Canonicalization Scheme (JCS).
  */
 export function canonicalize(obj: unknown): string {
-  if (obj === null || obj === undefined) return JSON.stringify(obj);
-  if (typeof obj === "string") return JSON.stringify(obj.normalize("NFC"));
-  if (typeof obj !== "object") return JSON.stringify(obj);
-  if (Array.isArray(obj)) {
-    return "[" + obj.map((v) => canonicalize(v)).join(",") + "]";
-  }
-  const sorted = Object.keys(obj as Record<string, unknown>).sort();
-  const pairs = sorted.map(
-    (k) => `${JSON.stringify(k)}:${canonicalize((obj as Record<string, unknown>)[k])}`
-  );
-  return "{" + pairs.join(",") + "}";
+  const result = _canonicalize(obj);
+  if (result === undefined) return "null";
+  return result;
 }
 
 /**

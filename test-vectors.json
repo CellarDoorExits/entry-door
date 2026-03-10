@@ -1,0 +1,137 @@
+{
+  "_meta": {
+    "generator": "cellar-door-entry (TypeScript)",
+    "version": "0.1.2",
+    "generated": "2026-03-10T03:45:20.519Z",
+    "description": "Cross-language test vectors for ENTRY Protocol (arrival markers)"
+  },
+  "canonicalization": [
+    {
+      "description": "Simple object — keys sorted",
+      "input": {
+        "b": "2",
+        "a": "1"
+      },
+      "expected": "{\"a\":\"1\",\"b\":\"2\"}"
+    },
+    {
+      "description": "Nested object — recursive sort",
+      "input": {
+        "z": {
+          "b": 2,
+          "a": 1
+        },
+        "a": "first"
+      },
+      "expected": "{\"a\":\"first\",\"z\":{\"a\":1,\"b\":2}}"
+    },
+    {
+      "description": "Array values preserved in order",
+      "input": {
+        "arr": [
+          3,
+          1,
+          2
+        ],
+        "key": "val"
+      },
+      "expected": "{\"arr\":[3,1,2],\"key\":\"val\"}"
+    }
+  ],
+  "keys": {
+    "ed25519": {
+      "privateKeyHex": "785f98c3b6eba2152a2424bb86b92347bbdd1ad87b0ee122fcf20f122413af56",
+      "publicKeyHex": "69c464b52e36472f443b06f80e345e26005320649e1369ab1a039afca4d4c79b",
+      "did": "did:key:z6Mkma8YZpBoL2W4Vgeb1nzDmaDPDadgmtCSize1QoAqRMeA"
+    },
+    "p256": {
+      "privateKeyHex": "0a4c5a16a11584b9182ca29d250171c7f6d2db5a350b3f10fcfe1cdadeaf1342",
+      "publicKeyHex": "036b2c79c80d55823a585280220871888588917d1f0a5709ad82d70bf8e368799b",
+      "did": "did:key:zDnaepseNhnwRjtQnGdDMfFteFHKiaXVfqHed2KrpcAPk76yQ"
+    }
+  },
+  "arrivalMarkers": {
+    "ed25519": {
+      "description": "Arrival marker signed with Ed25519",
+      "unsigned": {
+        "@context": "https://cellar-door.dev/entry/v1",
+        "type": "ArrivalMarker",
+        "departureRef": "urn:exit:193aa2310e156d97893b7712234acb049b2d5946537d5a6830012fc08e503f57",
+        "departureOrigin": "did:web:origin.example.com",
+        "destination": "did:web:destination.example.com",
+        "subject": "did:key:z6Mkma8YZpBoL2W4Vgeb1nzDmaDPDadgmtCSize1QoAqRMeA",
+        "timestamp": "2026-02-01T09:00:00.000Z",
+        "admissionType": "automatic",
+        "verificationResult": {
+          "valid": true,
+          "errors": []
+        },
+        "id": "urn:entry:d6130c1086dc3e4b73a56e2e391ebbf6140206ae9ef4df9920494d33953b0fdb"
+      },
+      "canonicalized": "{\"@context\":\"https://cellar-door.dev/entry/v1\",\"admissionType\":\"automatic\",\"departureOrigin\":\"did:web:origin.example.com\",\"departureRef\":\"urn:exit:193aa2310e156d97893b7712234acb049b2d5946537d5a6830012fc08e503f57\",\"destination\":\"did:web:destination.example.com\",\"id\":\"urn:entry:d6130c1086dc3e4b73a56e2e391ebbf6140206ae9ef4df9920494d33953b0fdb\",\"subject\":\"did:key:z6Mkma8YZpBoL2W4Vgeb1nzDmaDPDadgmtCSize1QoAqRMeA\",\"timestamp\":\"2026-02-01T09:00:00.000Z\",\"type\":\"ArrivalMarker\",\"verificationResult\":{\"errors\":[],\"valid\":true}}",
+      "contentHash": "6c5d48d69adee7212704b316bc99bf1ceccaf406353145b790101808bb61273e",
+      "signed": {
+        "@context": "https://cellar-door.dev/entry/v1",
+        "type": "ArrivalMarker",
+        "departureRef": "urn:exit:193aa2310e156d97893b7712234acb049b2d5946537d5a6830012fc08e503f57",
+        "departureOrigin": "did:web:origin.example.com",
+        "destination": "did:web:destination.example.com",
+        "subject": "did:key:z6Mkma8YZpBoL2W4Vgeb1nzDmaDPDadgmtCSize1QoAqRMeA",
+        "timestamp": "2026-02-01T09:00:00.000Z",
+        "admissionType": "automatic",
+        "verificationResult": {
+          "valid": true,
+          "errors": []
+        },
+        "id": "urn:entry:d6130c1086dc3e4b73a56e2e391ebbf6140206ae9ef4df9920494d33953b0fdb",
+        "proof": {
+          "type": "Ed25519Signature2020",
+          "created": "2026-02-01T09:00:01.000Z",
+          "verificationMethod": "did:key:z6Mkma8YZpBoL2W4Vgeb1nzDmaDPDadgmtCSize1QoAqRMeA",
+          "proofValue": "y3eSi8sqNJSWIm9vCaMVEW8mA9YKZUpQgiCRHV4ynKGrx/y4QQVDPMboz9GWnNyDHeuozP6uPSmhOZBGa9b0AQ=="
+        }
+      }
+    },
+    "p256": {
+      "description": "Arrival marker signed with P-256 (ECDSA)",
+      "unsigned": {
+        "@context": "https://cellar-door.dev/entry/v1",
+        "type": "ArrivalMarker",
+        "departureRef": "urn:exit:193aa2310e156d97893b7712234acb049b2d5946537d5a6830012fc08e503f57",
+        "departureOrigin": "did:web:origin.example.com",
+        "destination": "did:web:destination.example.com",
+        "subject": "did:key:z6Mkma8YZpBoL2W4Vgeb1nzDmaDPDadgmtCSize1QoAqRMeA",
+        "timestamp": "2026-02-01T09:00:00.000Z",
+        "admissionType": "automatic",
+        "verificationResult": {
+          "valid": true,
+          "errors": []
+        },
+        "id": "urn:entry:d6130c1086dc3e4b73a56e2e391ebbf6140206ae9ef4df9920494d33953b0fdb"
+      },
+      "canonicalized": "{\"@context\":\"https://cellar-door.dev/entry/v1\",\"admissionType\":\"automatic\",\"departureOrigin\":\"did:web:origin.example.com\",\"departureRef\":\"urn:exit:193aa2310e156d97893b7712234acb049b2d5946537d5a6830012fc08e503f57\",\"destination\":\"did:web:destination.example.com\",\"id\":\"urn:entry:d6130c1086dc3e4b73a56e2e391ebbf6140206ae9ef4df9920494d33953b0fdb\",\"subject\":\"did:key:z6Mkma8YZpBoL2W4Vgeb1nzDmaDPDadgmtCSize1QoAqRMeA\",\"timestamp\":\"2026-02-01T09:00:00.000Z\",\"type\":\"ArrivalMarker\",\"verificationResult\":{\"errors\":[],\"valid\":true}}",
+      "contentHash": "6c5d48d69adee7212704b316bc99bf1ceccaf406353145b790101808bb61273e",
+      "signed": {
+        "@context": "https://cellar-door.dev/entry/v1",
+        "type": "ArrivalMarker",
+        "departureRef": "urn:exit:193aa2310e156d97893b7712234acb049b2d5946537d5a6830012fc08e503f57",
+        "departureOrigin": "did:web:origin.example.com",
+        "destination": "did:web:destination.example.com",
+        "subject": "did:key:z6Mkma8YZpBoL2W4Vgeb1nzDmaDPDadgmtCSize1QoAqRMeA",
+        "timestamp": "2026-02-01T09:00:00.000Z",
+        "admissionType": "automatic",
+        "verificationResult": {
+          "valid": true,
+          "errors": []
+        },
+        "id": "urn:entry:d6130c1086dc3e4b73a56e2e391ebbf6140206ae9ef4df9920494d33953b0fdb",
+        "proof": {
+          "type": "EcdsaP256Signature2019",
+          "created": "2026-02-01T09:00:01.000Z",
+          "verificationMethod": "did:key:zDnaepseNhnwRjtQnGdDMfFteFHKiaXVfqHed2KrpcAPk76yQ",
+          "proofValue": "xIpSg4G2m3ygAbaEA2OL1wFoyKU4qO34RG7QTiUSt0hcnb5UMJP9aEpPO/XjF9U7EKbQrJVuMHg7PrkY4PZGuQ=="
+        }
+      }
+    }
+  }
+}

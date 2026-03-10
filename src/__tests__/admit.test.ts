@@ -483,4 +483,62 @@ describe("minting justification passthrough", () => {
       expect(result.admission.admitted).toBe(true);
     });
   });
+
+  describe("ADV-02: burn-on-reject DoS fix", () => {
+    it("should release claim on policy rejection so marker can be re-presented", async () => {
+      const exitMarker = await makeExit();
+      const store = new InMemoryClaimStore();
+      // Use REQUIRE_MUTUAL which will reject a self-only marker
+      const result1 = await admit(exitMarker, { policy: REQUIRE_MUTUAL, store });
+      expect(result1.admission.admitted).toBe(false);
+
+      // The claim should have been released — marker can be re-presented
+      // e.g. after policy changes to something more permissive
+      const permissive = createPolicy("permissive").defaultDecision("admit").build();
+      const result2 = await admit(exitMarker, { policy: permissive, store });
+      expect(result2.admission.admitted).toBe(true);
+    });
+
+    it("should release claim on verification failure so marker can try elsewhere", async () => {
+      const exitMarker = await makeExit();
+      const store = new InMemoryClaimStore();
+      // Create a policy that requires verified departure
+      const strictVerify = createPolicy("strict-verify")
+        .requireVerifiedDeparture()
+        .defaultDecision("admit")
+        .build();
+
+      // Tamper with proof to make verification fail
+      const tampered = JSON.parse(JSON.stringify(exitMarker));
+      tampered.proof.proofValue = "A".repeat(88);
+
+      const result1 = await admit(tampered, { policy: strictVerify, store });
+      expect(result1.admission.admitted).toBe(false);
+      expect(result1.admission.reasonCodes).toContain("departure-verification-failed");
+
+      // Claim should be released — original valid marker can be presented
+      const result2 = await admit(exitMarker, { policy: strictVerify, store });
+      expect(result2.admission.admitted).toBe(true);
+    });
+
+    it("should NOT release claim on replay detection", async () => {
+      const exitMarker = await makeExit();
+      const store = new InMemoryClaimStore();
+      const permissive = createPolicy("permissive").defaultDecision("admit").build();
+
+      // First admission succeeds and permanently consumes the claim
+      const result1 = await admit(exitMarker, { policy: permissive, store });
+      expect(result1.admission.admitted).toBe(true);
+
+      // Second attempt should be rejected as replay — claim stays consumed
+      const result2 = await admit(exitMarker, { policy: permissive, store });
+      expect(result2.admission.admitted).toBe(false);
+      expect(result2.admission.reasonCodes).toContain("replay-detected");
+
+      // Third attempt still rejected — claim was not released by replay rejection
+      const result3 = await admit(exitMarker, { policy: permissive, store });
+      expect(result3.admission.admitted).toBe(false);
+      expect(result3.admission.reasonCodes).toContain("replay-detected");
+    });
+  });
 });

@@ -31,7 +31,8 @@
     "prepublishOnly": "npm run build && npm test"
   },
   "dependencies": {
-    "@noble/hashes": "^1.8.0"
+    "@noble/hashes": "^1.8.0",
+    "canonicalize": "^2.1.0"
   },
   "peerDependencies": {
     "better-sqlite3": ">=9.0.0",
@@ -48,6 +49,7 @@
     "better-sqlite3": "^12.6.2",
     "cellar-door-exit": "file:../exit-door",
     "tsup": "^8.5.1",
+    "tsx": "^4.21.0",
     "typescript": "^5.4.5",
     "vitest": "^3.2.4"
   },

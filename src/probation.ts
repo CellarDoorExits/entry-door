@@ -6,6 +6,9 @@ import type { ExitMarker } from "cellar-door-exit";
 import { createArrivalMarker } from "./arrival.js";
 import type { ArrivalMarker, ProbationInfo, CreateArrivalOpts } from "./types.js";
 
+/** Maximum probation duration: 180 days in milliseconds (soft cap). */
+export const MAX_PROBATION_DURATION_MS = 180 * 24 * 60 * 60 * 1000; // 15_552_000_000
+
 /** Configuration for creating a probationary arrival. */
 export interface ProbationConfig {
   /** Duration in milliseconds. */
@@ -23,8 +26,14 @@ export function createProbationaryArrival(
   exitMarker: ExitMarker,
   destination: string,
   probation: ProbationConfig,
-  opts?: Omit<CreateArrivalOpts, "probation">
+  opts?: Omit<CreateArrivalOpts, "probation"> & { maxProbationDuration?: number }
 ): ArrivalMarker {
+  const maxDuration = opts?.maxProbationDuration ?? MAX_PROBATION_DURATION_MS;
+  if (probation.duration > maxDuration) {
+    console.warn(
+      `[cellar-door-entry] Probation duration ${probation.duration}ms exceeds soft cap of ${maxDuration}ms (${Math.round(maxDuration / 86400000)} days). Proceeding anyway.`
+    );
+  }
   const timestamp = opts?.timestamp ?? new Date().toISOString();
   const probationInfo: ProbationInfo = {
     duration: probation.duration,
