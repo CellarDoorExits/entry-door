@@ -1,21 +1,18 @@
 # Changelog
 
-## [0.1.0] - 2026-03-05
+## v1.2.1 (2026-03-10)
 
-### Added
-- **P-256 (ECDSA) support**: `signArrivalMarker()` accepts algorithm parameter, `verifyArrivalMarker()` auto-detects from proof type.
-- **`quickEntryP256()`**: Convenience function for P-256 signed arrivals.
-- **P-256 revocation markers**: `createRevocationMarker()` and `verifyRevocationMarker()` now support P-256 alongside Ed25519.
-- **Admission policies**: `evaluateAdmission()` with `OPEN_DOOR`, `STRICT`, `EMERGENCY_ONLY` presets.
-- **Probation**: `createProbationaryArrival()` and `isProbationComplete()` for conditional admissions.
-- **Capability scoping**: `scopeFromExitMarker()`, `createRestrictedScope()`, `mergeScopes()` for fine-grained permissions.
-- **Claim tracking**: `InMemoryClaimStore` with GDPR `deleteBySubject()` support.
-- **Transfer verification**: `verifyTransfer()` validates complete EXIT→ENTRY chains.
-- **Arrival validation**: `validateArrivalMarker()` with `MAX_MARKER_SIZE` limit.
-- **Continuity verification**: `verifyContinuity()` checks subject, reference, origin, and temporal ordering.
+- **feat:** Full entry-door v2 — policy engine, admit ceremony, counter-signature verification
+- **feat:** 7 preset policies (CAUTIOUS, REQUIRE_MUTUAL, PERMISSIVE, LOCKDOWN, etc.)
+- **feat:** SQLite persistent store with audit trail
+- **feat:** Minting support for fresh agents (no prior departure)
+- **fix:** ADV-02 burn-on-reject DoS — unique `pendingClaimId` per attempt
+- **fix:** RFC 8785 canonicalization (replaced hand-rolled)
+- **fix:** Deep clone exit marker input to prevent mutation
+- **docs:** Cross-language test vectors (TS/Python interop)
+- 262 tests passing
 
-### Fixed
-- **PCR-18**: Revocation markers now support P-256 signatures (was Ed25519-only).
+## v1.2.0 (2026-03-06)
 
-### Security
-- ⚠️ **Ephemeral key warning**: `quickEntry()` and `quickEntryP256()` generate ephemeral keys intended for testing/prototyping only. Production deployments should manage their own long-lived keypairs.
+- Initial entry-door with basic arrival/transfer validation
+- NIST RFI submission baseline
