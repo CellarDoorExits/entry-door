@@ -48,7 +48,16 @@ export function quickEntry(
   const exitMarker = fromJSON(exitMarkerJson);
   const arrival = createArrivalMarker(exitMarker, destination, opts);
 
-  // Sign with a fresh keypair (destination's key)
+  // Emit runtime warning about ephemeral keys (ADV-003)
+  if (typeof console !== "undefined" && console.warn) {
+    console.warn(
+      "[cellar-door-entry] quickEntry() uses an ephemeral keypair that is discarded after signing. " +
+      "The arrival marker cannot be revoked or updated later. " +
+      "For production, use createArrivalMarker() + signArrivalMarker() with a persistent key."
+    );
+  }
+
+  // Sign with a fresh ephemeral keypair (destination's key)
   let publicKey: Uint8Array;
   let privateKey: Uint8Array;
 

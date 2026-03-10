@@ -49,17 +49,19 @@ export function createArrivalMarker(
   destination: string,
   opts?: CreateArrivalOpts
 ): ArrivalMarker {
-  const verificationResult = verifyDeparture(exitMarker);
+  // Deep clone to prevent mutation of caller's exit marker (ADV-006)
+  const exit: ExitMarker = JSON.parse(JSON.stringify(exitMarker));
+  const verificationResult = verifyDeparture(exit);
   const admissionType = opts?.admissionType ?? (verificationResult.valid ? "automatic" : "reviewed");
   const timestamp = opts?.timestamp ?? new Date().toISOString();
 
   const body = {
     "@context": ENTRY_CONTEXT_V1 as typeof ENTRY_CONTEXT_V1,
     type: "ArrivalMarker" as const,
-    departureRef: exitMarker.id,
-    departureOrigin: exitMarker.origin,
+    departureRef: exit.id,
+    departureOrigin: exit.origin,
     destination,
-    subject: exitMarker.subject,
+    subject: exit.subject,
     timestamp,
     admissionType,
     ...(opts?.conditions ? { conditions: opts.conditions } : {}),
