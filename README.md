@@ -1,13 +1,15 @@
 # cellar-door-entry
 
 [![npm version](https://img.shields.io/npm/v/cellar-door-entry)](https://www.npmjs.com/package/cellar-door-entry)
-[![tests](https://img.shields.io/badge/tests-248_passing-brightgreen)]()
+[![tests](https://img.shields.io/badge/tests-251_passing-brightgreen)]()
 [![license](https://img.shields.io/badge/license-Apache--2.0-blue)](./LICENSE)
 [![NIST](https://img.shields.io/badge/NIST-submitted-orange)](https://cellar-door.dev/nist/)
 
 > **⚠️ Pre-release software — no formal security audit has been conducted.** This project is published for transparency, review, and community feedback. It should not be used in production systems where security guarantees are required. If you find a vulnerability, please report it to hawthornhollows@gmail.com.
 
 The arrival side. Verify where an agent came from and decide whether to let it in.
+
+> 📌 **[v1.2 Stable Snapshot](https://github.com/CellarDoorExits/entry-door/tree/v1.2-snapshot)** — Tagged reference point before v2 policy engine changes.
 
 ## Ecosystem
 
